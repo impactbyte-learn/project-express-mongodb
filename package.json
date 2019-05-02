@@ -1,0 +1,16 @@
+{
+  "name": "project-express-mongodb",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "cp .env.defaults .env",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "morgan": "~1.9.0"
+  }
+}
