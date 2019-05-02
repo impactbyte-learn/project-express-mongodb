@@ -21,18 +21,26 @@ const usersMiddleware = {
   getOneById: async (req, res, next) => {
     const id = Number(req.params.id)
 
-    const foundUser = await usersModel.find({ id: id })
+    try {
+      const foundUser = await usersModel.find({ id: id })
 
-    foundUser
-      ? res.send({
-          message: 'Get one user by id',
-          id: id,
-          data: foundUser
-        })
-      : res.status(404).send({
-          message: 'Get one user by id failed',
-          id: id
-        })
+      foundUser.username && foundUser.email
+        ? res.send({
+            message: 'Get one user by id',
+            id: id,
+            data: foundUser
+          })
+        : res.status(404).send({
+            message: 'Get one user by id not found',
+            id: id
+          })
+    } catch (error) {
+      res.status(404).send({
+        message: 'Get one user by id failed',
+        error: error,
+        id: id
+      })
+    }
   },
 
   // ---------------------------------------------------------------------------
