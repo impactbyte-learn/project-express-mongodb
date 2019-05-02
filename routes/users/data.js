@@ -1,4 +1,4 @@
-let data = [
+const data = [
   {
     id: 1,
     name: 'Alpha Avalon',

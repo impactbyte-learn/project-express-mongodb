@@ -1,9 +1,11 @@
-let usersData = require('./data')
+const usersModel = require('./model')
 
 const usersMiddleware = {
   // ---------------------------------------------------------------------------
   // Get all users
-  get: (req, res, next) => {
+  get: async (req, res, next) => {
+    const usersData = await usersModel.find()
+
     usersData
       ? res.send({
           message: 'Get all users',
@@ -16,12 +18,10 @@ const usersMiddleware = {
 
   // ---------------------------------------------------------------------------
   // Get one user by id
-  getOneById: (req, res, next) => {
+  getOneById: async (req, res, next) => {
     const id = Number(req.params.id)
 
-    const foundUser = usersData.find(user => {
-      return user.id === id
-    })
+    const foundUser = await usersModel.find({ id: id })
 
     foundUser
       ? res.send({
@@ -37,24 +37,31 @@ const usersMiddleware = {
 
   // ---------------------------------------------------------------------------
   // Post a new user
-  post: (req, res, next) => {
-    // get only relevant keys from request body
+  post: async (req, res, next) => {
     const { name, username, email, phone } = req.body
 
-    if (name && username && email && phone) {
-      // combine all keys and values into one object
-      const newUser = { name, username, email, phone }
+    if (name && username && email) {
+      const newUser = {
+        name,
+        username,
+        email,
+        phone
+      }
 
-      // concate new item to existing data
-      const newUsersData = usersData.concat(newUser)
+      try {
+        await usersModel.create(newUser)
 
-      // replace existing data with new data
-      usersData = newUsersData
-
-      res.send({
-        message: 'Created new user',
-        data: newUser
-      })
+        res.send({
+          message: 'Created new user',
+          data: newUser
+        })
+      } catch (error) {
+        res.send({
+          message: 'Created new user failed',
+          error: error,
+          data: newUser
+        })
+      }
     } else {
       res.status(400).send({
         message: 'Created new user failed'
